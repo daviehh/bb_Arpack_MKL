@@ -1,0 +1,13 @@
+language: julia
+
+os:
+  - linux
+
+julia:
+  - 1.3
+
+before_script:
+  - julia -e 'using Pkg; Pkg.add("BinaryBuilder"); Pkg.build()'
+
+script:
+  - julia build_tarballs.jl
