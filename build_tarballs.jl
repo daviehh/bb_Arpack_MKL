@@ -1,4 +1,7 @@
 using BinaryBuilder
+using MKL_jll
+
+mkl_lib_p = MKL_jll.__init__()
 
 # Collection of sources required to build Arpack
 name = "Arpack"
@@ -10,7 +13,7 @@ sources = [
 
 # Bash recipe for building across all platforms
 script = raw"""
-MKLLIB=$(julia -e 'using MKL_jll; MKL_jll.__init__()') # set MKL_jll lib path
+MKLLIB="__mkl_lib_repr__" # set MKL_jll lib path
 echo $MKLLIB
 mkdir ${WORKSPACE}/srcdir/arpack-build
 # arpack tests require finding libgfortran when linking with C linkers,
@@ -64,6 +67,9 @@ cmake ../arpack-ng-* -DCMAKE_INSTALL_PREFIX="$prefix" \
 make -j${nproc} VERBOSE=1
 make install VERBOSE=1
 """
+
+script = replace(script, "__mkl_lib_repr__" => mkl_lib_p)
+println(script)
 
 # These are the platforms we will build for by default, unless further
 # platforms are passed in on the command line.  We enable the full
