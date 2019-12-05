@@ -10,6 +10,8 @@ sources = [
 
 # Bash recipe for building across all platforms
 script = raw"""
+MKLLIB=$(julia -e 'using MKL_jll; MKL_jll.__init__()') # set MKL_jll lib path
+echo $MKLLIB
 mkdir ${WORKSPACE}/srcdir/arpack-build
 # arpack tests require finding libgfortran when linking with C linkers,
 # and gcc doesn't automatically add that search path.  So we do it for it with `rpath-link`.
@@ -56,8 +58,8 @@ export LDFLAGS="${EXE_LINK_FLAGS[@]} -L$prefix/lib -lpthread"
 cmake ../arpack-ng-* -DCMAKE_INSTALL_PREFIX="$prefix" \
     -DCMAKE_TOOLCHAIN_FILE="${CMAKE_TARGET_TOOLCHAIN}" \
     -DBUILD_SHARED_LIBS=ON \
-    -DBLAS_LIBRARIES="-L$MKLROOT/lib -lmkl_rt" \
-    -DLAPACK_LIBRARIES="-L$MKLROOT/lib -lmkl_rt" \
+    -DBLAS_LIBRARIES="-L$MKLLIB -lmkl_rt" \
+    -DLAPACK_LIBRARIES="-L$MKLLIB -lmkl_rt" \
     -DCMAKE_Fortran_FLAGS="${FFLAGS}"
 make -j${nproc} VERBOSE=1
 make install VERBOSE=1
