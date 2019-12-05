@@ -61,7 +61,7 @@ cmake ../arpack-ng-* -DCMAKE_INSTALL_PREFIX="$prefix" \
     -DCMAKE_Fortran_FLAGS="${FFLAGS}"
 make -j${nproc} VERBOSE=1
 make install VERBOSE=1
-
+"""
 
 # These are the platforms we will build for by default, unless further
 # platforms are passed in on the command line.  We enable the full
